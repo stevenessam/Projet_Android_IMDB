@@ -23,5 +23,6 @@ public class MainActivity extends AppCompatActivity {
         intent.putExtra("movieName",data);
         startActivity(intent);
 
+        //test
     }
 }
