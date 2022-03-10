@@ -23,7 +23,7 @@ import java.net.URLEncoder;
 import java.util.concurrent.ExecutionException;
 
 public class MovieSearch extends AppCompatActivity {
-
+    TextView title;
     String data;
 
     @Override
@@ -35,12 +35,12 @@ public class MovieSearch extends AppCompatActivity {
 //        rT.execute("avengers");
 
     }
-
-    public void refresh(View v) {
-        Intent i = getIntent();
-        data = i.getStringExtra("data");
-
-    }
+//
+//    public void refresh(View v) {
+//        Intent i = getIntent();
+//        data = i.getStringExtra("data");
+//
+//    }
 
 
     public void afficheData() {
@@ -69,7 +69,7 @@ public class MovieSearch extends AppCompatActivity {
                     ligne = bufferedReader.readLine();
                 }
                 JSONObject toDecode = new JSONObject(response);
-                //   response = decodeJSON(toDecode);
+                   response = decodeJSON(toDecode);
             } catch (UnsupportedEncodingException e) {
                 response = "problème d'encodage";
             } catch (MalformedURLException e) {
@@ -81,11 +81,25 @@ public class MovieSearch extends AppCompatActivity {
             }
             return response;
         }
-
         private String decodeJSON(JSONObject jso) throws Exception {
             String response = "";
+
+            JSONArray jsoresult = jso.getJSONArray("results");
+            for (int i = 0; i < jsoresult.length(); i++)
+                response += jsoresult.getJSONObject(i).getString("title");
+                       // + jsoresult.getJSONObject(i).getString("description") + " ";
+//l image a metre tous seul
+
+            //+ jsoresult.getJSONObject(i).getString("image");
+
+            title = findViewById(R.id.Title);
+
+            title.setText(response);
+
             return response;
         }
+
+
 
         @Override
         protected String doInBackground(String... strings) {
@@ -102,30 +116,18 @@ public class MovieSearch extends AppCompatActivity {
 
     }
 
-    private String decodeJSON(JSONObject jso) throws Exception {
-        String response = "";
 
-        JSONArray jsoresult = jso.getJSONArray("results");
-        for (int i = 0; i < jsoresult.length(); i++)
-            response += jsoresult.getJSONObject(i).getString("title") + " "
-                    + jsoresult.getJSONObject(i).getString("description") + " ";
-//l image a metre tous seul
-
-                    //+ jsoresult.getJSONObject(i).getString("image");
-
-        return response;
-    }
 
 
     public void SearchButton(View v) {
 
 
-        String myUrl = data;
+        String myUrl = "spider";
         RequestTask mh = new RequestTask();
         try {
             String result = mh.execute(myUrl).get();
-            TextView tw = (TextView) findViewById(R.id.txtView);
-            tw.setText(result);
+             title  = (TextView) findViewById(R.id.Title);
+            title.setText(result);
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
 

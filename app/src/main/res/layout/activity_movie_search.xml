@@ -8,7 +8,7 @@
     tools:context=".MovieSearch">
 
     <TextView
-        android:id="@+id/txtView"
+        android:id="@+id/Title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@android:color/black"
@@ -24,13 +24,6 @@
         android:text="parse"
         android:onClick="SearchButton"/>
 
-    <Button
-        android:id="@+id/refreshBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="407dp"
-        android:onClick="refresh"
-        android:text="Refresh" />
+
 
 </RelativeLayout>
