@@ -4,28 +4,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
-
-    <Button
-        android:id="@+id/btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:onClick="SearchButton"
-        android:text="NOUVELLE PARTIE" />
+    android:padding="16dp"
+    tools:context="MainActivity">
 
     <TextView
-        android:id="@+id/label"
+        android:id="@+id/text_view_result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nombre de Questions :"
-        android:layout_below="@+id/btn"
-        android:layout_centerHorizontal="true"
-        />
+        android:textColor="@android:color/black"
+        android:textSize="20sp" />
 
     <EditText
-        android:id="@+id/textEntree"
+        android:id="@+id/MovieName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/label" />
+        android:hint="Movie name" />
+
+    <Button
+        android:id="@+id/button_parse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="29dp"
+        android:text="Next Page"
+        android:onClick="ChangePage"/>
+
 </RelativeLayout>

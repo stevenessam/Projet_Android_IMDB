@@ -20,36 +20,36 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.concurrent.ExecutionException;
 
 public class MovieSearch extends AppCompatActivity {
 
     String data;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_search);
-        afficheData();
-        RequestTask rT =new RequestTask();
-        rT.execute("avengers");
+      //  afficheData();
+//        RequestTask rT =new RequestTask();
+//        rT.execute("avengers");
 
     }
 
-    public void checkAnswers(View v){
-
-
-
-    }
-
-
-    public void afficheData(){
+    public void refresh(View v) {
         Intent i = getIntent();
-        data =i.getStringExtra("data");
+        data = i.getStringExtra("data");
 
     }
 
 
-    private class RequestTask extends AsyncTask <String, Void, String>  {
+    public void afficheData() {
 
+
+    }
+
+
+    private class RequestTask extends AsyncTask<String, Void, String> {
 
 
         private String requete(String name) {
@@ -57,15 +57,15 @@ public class MovieSearch extends AppCompatActivity {
             try {
                 HttpURLConnection connection = null;
                 URL url = new
-                        URL("https://imdb-api.com/en/API/SearchMovie/k_dgd1pq04/"+ URLEncoder.encode(name,"utf-8"));
+                        URL("https://imdb-api.com/en/API/SearchMovie/k_dgd1pq04/" + URLEncoder.encode(name, "utf-8"));
                 connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
                 InputStream inputStream = connection.getInputStream();
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                String ligne = bufferedReader.readLine() ;
-                while (ligne!= null){
-                    response+=ligne;
+                String ligne = bufferedReader.readLine();
+                while (ligne != null) {
+                    response += ligne;
                     ligne = bufferedReader.readLine();
                 }
                 JSONObject toDecode = new JSONObject(response);
@@ -97,9 +97,6 @@ public class MovieSearch extends AppCompatActivity {
 
         protected void onPostExecute(String result) {
 
-            TextView tv = findViewById(R.id.tView);
-
-            tv.setText(result);
 
         }
 
@@ -108,16 +105,32 @@ public class MovieSearch extends AppCompatActivity {
     private String decodeJSON(JSONObject jso) throws Exception {
         String response = "";
 
-            JSONArray jsoresult = jso.getJSONArray("results");
-            for (int i = 0; i < jsoresult.length(); i++)
-                response += jsoresult.getJSONObject(i).getString("title")+ " "
-                        +jsoresult.getJSONObject(i).getString("description")+" "
+        JSONArray jsoresult = jso.getJSONArray("results");
+        for (int i = 0; i < jsoresult.length(); i++)
+            response += jsoresult.getJSONObject(i).getString("title") + " "
+                    + jsoresult.getJSONObject(i).getString("description") + " ";
 //l image a metre tous seul
 
-                        +jsoresult.getJSONObject(i).getString("image");
+                    //+ jsoresult.getJSONObject(i).getString("image");
 
         return response;
     }
 
 
+    public void SearchButton(View v) {
+
+
+        String myUrl = data;
+        RequestTask mh = new RequestTask();
+        try {
+            String result = mh.execute(myUrl).get();
+            TextView tw = (TextView) findViewById(R.id.txtView);
+            tw.setText(result);
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+
+        }
+
+
+    }
 }
