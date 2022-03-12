@@ -20,17 +20,21 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class MovieSearch extends AppCompatActivity {
-    TextView title;
+    TextView textView1;
+    TextView textView2;
     String data;
-
+    ArrayList<MovieModel> movieList = new ArrayList<MovieModel>();
+    MovieModel movies = new MovieModel();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_search);
-      //  afficheData();
+        //  afficheData();
 //        RequestTask rT =new RequestTask();
 //        rT.execute("avengers");
 
@@ -51,7 +55,14 @@ public class MovieSearch extends AppCompatActivity {
 
     private class RequestTask extends AsyncTask<String, Void, String> {
 
+        @Override
+        protected String doInBackground(String... strings) {
+            String response = requete(strings[0]);
+            return response;
 
+        }
+        String titleM;
+        String descriptionM;
         private String requete(String name) {
             String response = "";
             try {
@@ -69,7 +80,7 @@ public class MovieSearch extends AppCompatActivity {
                     ligne = bufferedReader.readLine();
                 }
                 JSONObject toDecode = new JSONObject(response);
-                   response = decodeJSON(toDecode);
+                response = decodeJSON(toDecode).toString();
             } catch (UnsupportedEncodingException e) {
                 response = "problème d'encodage";
             } catch (MalformedURLException e) {
@@ -81,32 +92,29 @@ public class MovieSearch extends AppCompatActivity {
             }
             return response;
         }
-        private String decodeJSON(JSONObject jso) throws Exception {
+        private List<MovieModel> decodeJSON(JSONObject jso) throws Exception {
             String response = "";
 
+
+
             JSONArray jsoresult = jso.getJSONArray("results");
-            for (int i = 0; i < jsoresult.length(); i++)
-                response += jsoresult.getJSONObject(i).getString("title");
-                       // + jsoresult.getJSONObject(i).getString("description") + " ";
+            for (int i = 0; i < jsoresult.length(); i++) {
+                movies.setTitle(jsoresult.getJSONObject(i).getString("title") );
+                movies.setDescription(jsoresult.getJSONObject(i).getString("description"));
+                movieList.add(movies);
+
+            }
+            // + jsoresult.getJSONObject(i).getString("description") + " ";
 //l image a metre tous seul
 
             //+ jsoresult.getJSONObject(i).getString("image");
 
-            title = findViewById(R.id.Title);
 
-            title.setText(response);
-
-            return response;
+            return movieList;
         }
 
 
 
-        @Override
-        protected String doInBackground(String... strings) {
-            String response = requete(strings[0]);
-            return response;
-
-        }
 
 
         protected void onPostExecute(String result) {
@@ -122,12 +130,19 @@ public class MovieSearch extends AppCompatActivity {
     public void SearchButton(View v) {
 
 
-        String myUrl = "spider";
+        String myUrl = "batman";
         RequestTask mh = new RequestTask();
-        try {
-            String result = mh.execute(myUrl).get();
-             title  = (TextView) findViewById(R.id.Title);
-            title.setText(result);
+        try { String result = mh.execute(myUrl).get();
+            textView1 = (TextView) findViewById(R.id.textView1);
+            textView2 = (TextView) findViewById(R.id.textView2);
+            for (int i = 0; i < movieList.size(); i++) {
+
+
+                textView1.setText(movieList.get(i).getTitle());
+                textView2.setText(movieList.get(i).getDescription());
+
+
+            }
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
 
