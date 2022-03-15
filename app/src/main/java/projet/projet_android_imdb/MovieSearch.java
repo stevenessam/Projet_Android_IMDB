@@ -2,8 +2,6 @@ package projet.projet_android_imdb;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -94,10 +92,10 @@ public class MovieSearch extends AppCompatActivity {
             }
             return response;
         }
-        private List<MovieModel> decodeJSON(JSONObject jso) throws Exception {
-            String response = "";
+        private List<String> decodeJSON(JSONObject jso) throws Exception {
+            //String response = "";
 
-            ArrayList<String> movieList = new ArrayList<>()
+            ArrayList<String> movieList = new ArrayList<>();
             JSONArray jsoresult = jso.getJSONArray("results");
             for (int i = 0; i < jsoresult.length(); i++) {
                 JSONObject tmp = jsoresult.getJSONObject(i);
