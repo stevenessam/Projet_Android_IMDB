@@ -2,10 +2,12 @@ package projet.projet_android_imdb;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -95,19 +97,18 @@ public class MovieSearch extends AppCompatActivity {
         private List<MovieModel> decodeJSON(JSONObject jso) throws Exception {
             String response = "";
 
-
-
+            ArrayList<String> movieList = new ArrayList<>()
             JSONArray jsoresult = jso.getJSONArray("results");
             for (int i = 0; i < jsoresult.length(); i++) {
-                movies.setTitle(jsoresult.getJSONObject(i).getString("title") );
-                movies.setDescription(jsoresult.getJSONObject(i).getString("description"));
-                movieList.add(movies);
+                JSONObject tmp = jsoresult.getJSONObject(i);
+                String title = tmp.getString("title");
+                String description = tmp.getString("description");
+                movieList.add(title);
+                movieList.add(description);
 
             }
-            // + jsoresult.getJSONObject(i).getString("description") + " ";
-//l image a metre tous seul
 
-            //+ jsoresult.getJSONObject(i).getString("image");
+
 
 
             return movieList;
@@ -115,11 +116,21 @@ public class MovieSearch extends AppCompatActivity {
 
 
 
-        
 
 
-        protected void onPostExecute(String result) {
 
+        protected void onPostExecute(ArrayList<String> result) {
+
+            LinearLayout ll = findViewById(R.id.ll1);
+
+            for (int i = 0 ; i <result.size();i++){
+                TextView titleView = new TextView(getApplicationContext());
+                TextView descriptionView = new TextView(getApplicationContext());
+                ll.addView(titleView);
+                ll.addView(descriptionView);
+                titleView.setId(i);
+                descriptionView.setId(++i);
+            }
 
         }
 
