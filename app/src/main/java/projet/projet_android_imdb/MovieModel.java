@@ -10,6 +10,7 @@ public class MovieModel {
 
     }
 
+    
     public MovieModel(String title, String description, String img) {
         this.title = title;
         this.description = description;
