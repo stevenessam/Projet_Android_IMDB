@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void ChangePage(View v) {
-        //test
+   
 
 
         movieName = findViewById(R.id.MovieName);
