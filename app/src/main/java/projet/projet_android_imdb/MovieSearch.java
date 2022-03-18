@@ -2,11 +2,14 @@ package projet.projet_android_imdb;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -20,34 +23,25 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class MovieSearch extends AppCompatActivity {
-    TextView textView1;
-    TextView textView2;
-    String data;
 
+TextView textView1;
+TextView textView2;
+
+ArrayList<MovieModel> movieList = new ArrayList<MovieModel>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_search);
-        //  afficheData();
+//
 //        RequestTask rT =new RequestTask();
 //        rT.execute("avengers");
-
     }
-//
-//    public void refresh(View v) {
-//        Intent i = getIntent();
-//        data = i.getStringExtra("data");
-//
-//    }
 
-
-    public void afficheData() {
-
-
-    }
 
 
     private class RequestTask extends AsyncTask<String, Void, String> {
@@ -77,7 +71,7 @@ public class MovieSearch extends AppCompatActivity {
                     ligne = bufferedReader.readLine();
                 }
                 JSONObject toDecode = new JSONObject(response);
-                response = decodeJSON(toDecode);
+                response = decodeJSON(toDecode).toString();
             } catch (UnsupportedEncodingException e) {
                 response = "problème d'encodage";
             } catch (MalformedURLException e) {
@@ -89,47 +83,77 @@ public class MovieSearch extends AppCompatActivity {
             }
             return response;
         }
-        private String decodeJSON(JSONObject jso) throws Exception {
-            String response = "";
+
+        private ArrayList<MovieModel> decodeJSON(JSONObject jso) throws Exception {
+            //String response = "";
+
 
             JSONArray jsoresult = jso.getJSONArray("results");
             for (int i = 0; i < jsoresult.length(); i++) {
-                response += jsoresult.getJSONObject(i).getString("title") + " "
-                        + jsoresult.getJSONObject(i).getString("description")+ "\n";
+                MovieModel movieModel = new MovieModel();
+                JSONObject tmp = jsoresult.getJSONObject(i);
+                String title = tmp.getString("title");
+                String description = tmp.getString("description");
+                String image = tmp.getString("image");
+
+                movieModel.setTitle(title);
+                movieModel.setDescription(description);
+                movieModel.setImg(image);
+
+                movieList.add(movieModel);
+
             }
-            // + jsoresult.getJSONObject(i).getString("description") + " ";
-//l image a metre tous seul
-
-            //+ jsoresult.getJSONObject(i).getString("image");
-
-
-            return response;
+            return movieList;
         }
 
 
-
-
-
-        protected void onPostExecute(String result) {
-
+        protected void onPostExecute(ArrayList<String> result) {
+//
+//            LinearLayout ll = (LinearLayout) findViewById(R.id.ll1);
+//
+//            for (int i = 0 ; i <result.size();i++){
+//                TextView titleView = new TextView(getApplicationContext());
+//                TextView descriptionView = new TextView(getApplicationContext());
+//                ll.addView(titleView);
+//                ll.addView(descriptionView);
+//                titleView.setText(result.get(i));
+//                descriptionView.setText(result.get(i));
+////                titleView.setId(i);
+////                descriptionView.setId(++i);
+//            }
 
         }
 
     }
 
 
-
-
     public void SearchButton(View v) {
 
 
-        String myUrl = "avengers";
+        String myUrl = "spider";
         RequestTask mh = new RequestTask();
-        try {
-            String result = mh.execute(myUrl).get();
-            textView1  = (TextView) findViewById(R.id.textView1);
+        try { String result = mh.execute(myUrl).get();
+            LinearLayout ll = (LinearLayout) findViewById(R.id.ll1);
+            for (int i = 0; i < movieList.size(); i++) {
+                int a = 0;
+                a = a + i;
+                TextView titleView = new TextView(getApplicationContext());
+                TextView descriptionView = new TextView(getApplicationContext());
+                TextView imageView = new TextView(getApplicationContext());
+                ll.addView(titleView);
+                ll.addView(descriptionView);
+                ll.addView(imageView);
 
-            textView1.setText(result);
+                titleView.setId(a);
+                descriptionView.setId(++a);
+                imageView.setId(++a);
+
+                titleView.setText(movieList.get(i).getTitle());
+                descriptionView.setText(movieList.get(i).getDescription());
+                imageView.setText(movieList.get(i).getImg());
+
+
+            }
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
 
