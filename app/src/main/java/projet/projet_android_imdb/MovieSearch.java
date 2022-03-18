@@ -2,10 +2,10 @@ package projet.projet_android_imdb;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -20,16 +20,13 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class MovieSearch extends AppCompatActivity {
     TextView textView1;
     TextView textView2;
     String data;
-    ArrayList<MovieModel> movieList = new ArrayList<MovieModel>();
-    MovieModel movies = new MovieModel();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,7 +77,7 @@ public class MovieSearch extends AppCompatActivity {
                     ligne = bufferedReader.readLine();
                 }
                 JSONObject toDecode = new JSONObject(response);
-                response = decodeJSON(toDecode).toString();
+                response = decodeJSON(toDecode);
             } catch (UnsupportedEncodingException e) {
                 response = "problème d'encodage";
             } catch (MalformedURLException e) {
@@ -92,43 +89,29 @@ public class MovieSearch extends AppCompatActivity {
             }
             return response;
         }
-        private List<String> decodeJSON(JSONObject jso) throws Exception {
-            //String response = "";
+        private String decodeJSON(JSONObject jso) throws Exception {
+            String response = "";
 
-            ArrayList<String> movieList = new ArrayList<>();
             JSONArray jsoresult = jso.getJSONArray("results");
             for (int i = 0; i < jsoresult.length(); i++) {
-                JSONObject tmp = jsoresult.getJSONObject(i);
-                String title = tmp.getString("title");
-                String description = tmp.getString("description");
-                movieList.add(title);
-                movieList.add(description);
-
+                response += jsoresult.getJSONObject(i).getString("title") + " "
+                        + jsoresult.getJSONObject(i).getString("description")+ "\n";
             }
+            // + jsoresult.getJSONObject(i).getString("description") + " ";
+//l image a metre tous seul
+
+            //+ jsoresult.getJSONObject(i).getString("image");
 
 
-
-
-            return movieList;
+            return response;
         }
 
 
 
 
 
+        protected void onPostExecute(String result) {
 
-        protected void onPostExecute(ArrayList<String> result) {
-
-            LinearLayout ll = findViewById(R.id.ll1);
-
-            for (int i = 0 ; i <result.size();i++){
-                TextView titleView = new TextView(getApplicationContext());
-                TextView descriptionView = new TextView(getApplicationContext());
-                ll.addView(titleView);
-                ll.addView(descriptionView);
-                titleView.setId(i);
-                descriptionView.setId(++i);
-            }
 
         }
 
@@ -140,19 +123,13 @@ public class MovieSearch extends AppCompatActivity {
     public void SearchButton(View v) {
 
 
-        String myUrl = "batman";
+        String myUrl = "avengers";
         RequestTask mh = new RequestTask();
-        try { String result = mh.execute(myUrl).get();
-            textView1 = (TextView) findViewById(R.id.textView1);
-            textView2 = (TextView) findViewById(R.id.textView2);
-            for (int i = 0; i < movieList.size(); i++) {
+        try {
+            String result = mh.execute(myUrl).get();
+            textView1  = (TextView) findViewById(R.id.textView1);
 
-
-                textView1.setText(movieList.get(i).getTitle());
-                textView2.setText(movieList.get(i).getDescription());
-
-
-            }
+            textView1.setText(result);
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
 
