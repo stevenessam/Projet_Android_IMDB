@@ -1,25 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <EditText
+        android:id="@+id/editTextMovieName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+/>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/scroll1"
+        android:layout_below="@+id/editTextMovieName"
+        >
     <LinearLayout
         android:id="@+id/ll1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
 
-        android:orientation="vertical">
+        >
 
 
     </LinearLayout>
+    </ScrollView>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="SearchButton"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+
 
         />
 
-</LinearLayout>
+</RelativeLayout>

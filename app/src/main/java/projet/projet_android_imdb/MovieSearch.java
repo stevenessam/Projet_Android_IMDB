@@ -2,9 +2,12 @@ package projet.projet_android_imdb;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -31,7 +34,7 @@ public class MovieSearch extends AppCompatActivity {
 
 TextView textView1;
 TextView textView2;
-
+EditText editTextMovieName;
 ArrayList<MovieModel> movieList = new ArrayList<MovieModel>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,30 +130,73 @@ ArrayList<MovieModel> movieList = new ArrayList<MovieModel>();
     }
 
 
+
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
+        }
+    }
+
+
+
     public void SearchButton(View v) {
 
-
-        String myUrl = "spider";
+        editTextMovieName = findViewById(R.id.editTextMovieName);
+        String data= editTextMovieName.getText().toString();
+        String myUrl = data;
         RequestTask mh = new RequestTask();
         try { String result = mh.execute(myUrl).get();
             LinearLayout ll = (LinearLayout) findViewById(R.id.ll1);
             for (int i = 0; i < movieList.size(); i++) {
-                int a = 0;
-                a = a + i;
+                int a,b,c,d;
+                d =0;
+                a = 0;
+                a = d + i;
+
+                LinearLayout ln = new LinearLayout(getApplicationContext());
                 TextView titleView = new TextView(getApplicationContext());
                 TextView descriptionView = new TextView(getApplicationContext());
-                TextView imageView = new TextView(getApplicationContext());
-                ll.addView(titleView);
-                ll.addView(descriptionView);
-                ll.addView(imageView);
+                ImageView imageView = new ImageView(getApplicationContext());
 
                 titleView.setId(a);
-                descriptionView.setId(++a);
-                imageView.setId(++a);
+                b= a+1;
+                descriptionView.setId(b);
+                c = b +1;
+                imageView.setId(c);
+                d=c+1;
+                ln.setId(d);
+
+                ln.addView(titleView);
+                ln.addView(descriptionView);
+                ln.addView(imageView);
 
                 titleView.setText(movieList.get(i).getTitle());
                 descriptionView.setText(movieList.get(i).getDescription());
-                imageView.setText(movieList.get(i).getImg());
+
+                new DownloadImageTask((ImageView) findViewById(c)).execute(movieList.get(i).getImg());
+
+
+                ll.addView(ln);
+
 
 
             }
